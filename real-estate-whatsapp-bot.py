@@ -1,28 +1,26 @@
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
-import uvicorn
 
 app = FastAPI()
 
-
-@app.post("/whatsapp", response_class=PlainTextResponse)
+@app.post("/whatsapp")
 async def whatsapp_reply(
     request: Request,
     Body: str = Form(...),
     From: str = Form(...)
 ):
-    print(f"Incoming message from {From}: {Body}")
-
+    # Create Twilio response
     response = MessagingResponse()
     msg = response.message()
 
-    # Simple keyword logic
+    # Basic chatbot logic
     if "buy" in Body.lower():
         msg.body("Thanks for your interest! What city are you looking in?")
     elif "sell" in Body.lower():
-        msg.body("Great! What kind of property are you selling?")
+        msg.body("Great! Please share the location of your property.")
     else:
         msg.body("Welcome to Real Estate Bot! Type 'Buy' or 'Sell' to begin.")
 
-    return str(response)
+    # Return proper XML response
+    return Response(content=str(response), media_type="application/xml")
