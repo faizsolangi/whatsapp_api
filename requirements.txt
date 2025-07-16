@@ -1,4 +1,5 @@
-python-multipart
 fastapi
 uvicorn
 twilio
+python-multipart
+requests
